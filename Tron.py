@@ -65,6 +65,20 @@ def Narisi():
     for y in range (0, WINDOWHEIGHT, CELLSIZE): # draw horizontal lines
         pygame.draw.line(DISPLAYSURF, Crna, (0,y), (WINDOWWIDTH, y))
 
+def Veljaven(Polje, x,y, kamx, kamy):
+	return ((x + kamx <= CELLWIDTH) and\
+			 (x + kamx >= 0) and \
+			 (y + kamy <= CELLHEIGHT) and\
+			 (y + kamy >= 0) and\
+			 (Polje[x + kamx][y + kamy] == 0))
+
+def Premik(Polje, x, y, smerx, smery):
+	if(Veljaven(Polje, x, y, smerx, smery)):
+		Polje[x+smerx][y+smery] = 1
+		print x, y
+		return Polje, x+smerx, y+smery
+	else:
+		return Polje, None, None
 
 #################################################
 #MAIN FUNKCIJA
@@ -82,11 +96,43 @@ def main():
 
     Narisi()
     pygame.display.update()
+    sx = 0
+    sy = 1 #premika se v desno
+    x = 5
+    y = 5
     while True: #main game loop
+        ##############
+        #Mechanicks
+        if(x == None and y == None):
+            print "Konec"
+            break
+        Polje, x, y = Premik(Polje, x, y, sx, sy) #nova slika(nova generacija celic)
+        BarvajPolje(Polje)
+        Narisi()
+        pygame.display.update()
+        FPSclock.tick(FPS)
+
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
+            if event.type == KEYDOWN:
+            	if(event.key == K_DOWN):
+            		sx = 0
+            		sy = 1
+            	elif(event.key == K_UP):
+            		sx = 0
+            		sy = -1
+            	elif(event.key == K_LEFT):
+            		sx = -1
+            		sy = 0
+            	elif(event.key == K_RIGHT):
+            		sx = 1 
+            		sy = 0
+
+        
         
 if __name__=='__main__':
     main()
