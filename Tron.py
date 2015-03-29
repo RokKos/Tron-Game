@@ -43,8 +43,10 @@ def BarvajPolje(Polje):
         for y in range(CELLHEIGHT):
             ty = y * CELLSIZE
             tx = x * CELLSIZE
-            if Polje[x][y]:
-                pygame.draw.rect(DISPLAYSURF, Crna,(tx,ty, CELLSIZE, CELLSIZE)) #rect(Surface, color, Rect, width=0) -> tko ga izpolnes
+            if Polje[x][y] == 1:
+                pygame.draw.rect(DISPLAYSURF, Rdeca,(tx,ty, CELLSIZE, CELLSIZE)) #rect(Surface, color, Rect, width=0) -> tko ga izpolnes
+            elif Polje[x][y] == 2:
+                pygame.draw.rect(DISPLAYSURF, Modra,(tx,ty, CELLSIZE, CELLSIZE))
             else:
                 pygame.draw.rect(DISPLAYSURF, Bela,(tx,ty, CELLSIZE, CELLSIZE))
     return None
@@ -72,9 +74,9 @@ def Veljaven(Polje, x,y, kamx, kamy):
 			 (y + kamy >= 0) and\
 			 (Polje[x + kamx][y + kamy] == 0))
 
-def Premik(Polje, x, y, smerx, smery):
+def Premik(Polje, x, y, smerx, smery, vrednost):
 	if(Veljaven(Polje, x, y, smerx, smery)):
-		Polje[x+smerx][y+smery] = 1
+		Polje[x+smerx][y+smery] = vrednost
 		print x, y
 		return Polje, x+smerx, y+smery
 	else:
@@ -96,17 +98,22 @@ def main():
 
     Narisi()
     pygame.display.update()
-    sx = 0
-    sy = 1 #premika se v desno
-    x = 5
-    y = 5
+    igralec1sx = 0
+    igralec1sy = 1 #premika se v desno
+    igralec1x = 5
+    igralec1y = 5
+    igralec2sx = -1
+    igralec2sy = 0 #premika se v levo
+    igralec2x = 70
+    igralec2y = 5
     while True: #main game loop
         ##############
         #Mechanicks
-        if(x == None and y == None):
+        if(igralec1x == None and igralec1y == None or igralec2x == None and igralec2y):
             print "Konec"
             break
-        Polje, x, y = Premik(Polje, x, y, sx, sy) #nova slika(nova generacija celic)
+        Polje, igralec1x, igralec1y = Premik(Polje, igralec1x, igralec1y, igralec1sx, igralec1sy, 1) #nova slika(nova generacija celic)
+        Polje, igralec2x, igralec2y = Premik(Polje, igralec2x, igralec2y, igralec2sx, igralec2sy, 2) #nova slika(nova generacija celic)
         BarvajPolje(Polje)
         Narisi()
         pygame.display.update()
@@ -119,19 +126,34 @@ def main():
                 sys.exit()
 
             if event.type == KEYDOWN:
+                ###########################################
+                #Igralec 1
             	if(event.key == K_DOWN):
-            		sx = 0
-            		sy = 1
+            		igralec1sx = 0
+            		igralec1sy = 1
             	elif(event.key == K_UP):
-            		sx = 0
-            		sy = -1
+            		igralec1sx = 0
+            		igralec1sy = -1
             	elif(event.key == K_LEFT):
-            		sx = -1
-            		sy = 0
+            		igralec1sx = -1
+            		igralec1sy = 0
             	elif(event.key == K_RIGHT):
-            		sx = 1 
-            		sy = 0
-
+            		igralec1sx = 1 
+            		igralec1sy = 0
+                ###########################################
+                #Igralec 2
+                if(event.key == K_s):
+                    igralec2sx = 0
+                    igralec2sy = 1
+                elif(event.key == K_w):
+                    igralec2sx = 0
+                    igralec2sy = -1
+                elif(event.key == K_a):
+                    igralec2sx = -1
+                    igralec2sy = 0
+                elif(event.key == K_d):
+                    igralec2sx = 1 
+                    igralec2sy = 0
         
         
 if __name__=='__main__':
